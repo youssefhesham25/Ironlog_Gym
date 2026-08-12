@@ -19,22 +19,25 @@ let state = {
 
 const NAV_ROLES = {
   Admin: [
-    ['dashboard', 'Dashboard'],
-    ['members', 'Members'],
-    ['trainers', 'Trainers'],
-    ['plans', 'Plans'],
+    ['dashboard', 'Dashboard (Admin)'],
+    ['members', 'Members (Admin)'],
+    ['trainers', 'Trainers (Admin)'],
+    ['plans', 'Plans (Admin)'],
     ['attendance', 'Attendance Station'],
     ['reports', 'Reports & Scheduler'],
-    ['notifications', 'Expiry Alerts']
+    ['notifications', 'Expiry Alerts'],
+    ['trainer_clients', 'My Clients (Trainer)'],
+    ['member_dashboard', 'Welcome (Member)'],
+    ['member_subscription', 'Subscription (Member)']
   ],
   Trainer: [
-    ['mymembers', 'My Clients'],
+    ['trainer_clients', 'My Clients'],
     ['attendance', 'Attendance Station']
   ],
   Member: [
-    ['dashboard', 'Welcome'],
+    ['member_dashboard', 'Welcome'],
     ['attendance', 'Live Gym Floor'],
-    ['subscription', 'My Subscription'],
+    ['member_subscription', 'My Subscription'],
     ['notifications', 'Alerts Log']
   ]
 };
@@ -44,7 +47,7 @@ async function loadData() {
   if (!user) return;
 
   if (user.role === 'Admin') {
-    const [statsRes, membersRes, trainersRes, plansRes, occRes, dailyRes, monthlyRes, peakRes, alertsRes] = await Promise.all([
+    const [statsRes, membersRes, trainersRes, plansRes, occRes, dailyRes, monthlyRes, peakRes, alertsRes, profileRes] = await Promise.all([
       apiFetch('/dashboard'),
       apiFetch('/members'),
       apiFetch('/trainers'),
@@ -53,7 +56,8 @@ async function loadData() {
       apiFetch('/reports/daily'),
       apiFetch('/reports/monthly'),
       apiFetch('/reports/peak-hours'),
-      apiFetch('/alerts')
+      apiFetch('/alerts'),
+      apiFetch('/members/1')
     ]);
 
     if (statsRes && statsRes.data) state.stats = statsRes.data;
@@ -65,6 +69,7 @@ async function loadData() {
     if (monthlyRes && monthlyRes.data) state.monthlyReports = monthlyRes.data;
     if (peakRes && peakRes.data) state.peakHours = peakRes.data;
     if (alertsRes && alertsRes.data) state.notifications = alertsRes.data;
+    if (profileRes && profileRes.data) state.memberProfile = profileRes.data;
   } else if (user.role === 'Trainer') {
     const [membersRes, trainersRes, occRes] = await Promise.all([
       apiFetch('/members'),
@@ -138,19 +143,25 @@ function renderMain() {
       html = views.viewAdminReports(state.dailyReports, state.monthlyReports);
     } else if (state.view === 'notifications') {
       html = views.viewNotificationsList(state.notifications);
+    } else if (state.view === 'trainer_clients') {
+      html = views.viewTrainerMembers(state.members, state.plans, state.trainers, state.search, state.statusFilter, 1);
+    } else if (state.view === 'member_dashboard') {
+      html = views.viewMemberDashboard(state.memberProfile, state.liveOccupancy, handleCheckIn, handleCheckOut);
+    } else if (state.view === 'member_subscription') {
+      html = views.viewMemberSubscription(state.memberProfile, state.plans);
     }
   } else if (user.role === 'Trainer') {
-    if (state.view === 'mymembers') {
+    if (state.view === 'trainer_clients') {
       html = views.viewTrainerMembers(state.members, state.plans, state.trainers, state.search, state.statusFilter, user.referenceId);
     } else if (state.view === 'attendance') {
       html = views.viewAdminAttendance(state.liveOccupancy, state.members, handleCheckIn, handleCheckOut);
     }
   } else if (user.role === 'Member') {
-    if (state.view === 'dashboard') {
+    if (state.view === 'member_dashboard') {
       html = views.viewMemberDashboard(state.memberProfile, state.liveOccupancy, handleCheckIn, handleCheckOut);
     } else if (state.view === 'attendance') {
       html = views.viewLiveOccupancyPanel(state.liveOccupancy, handleCheckOut);
-    } else if (state.view === 'subscription') {
+    } else if (state.view === 'member_subscription') {
       html = views.viewMemberSubscription(state.memberProfile, state.plans);
     } else if (state.view === 'notifications') {
       html = views.viewNotificationsList(state.notifications);
