@@ -5,7 +5,7 @@
 const API_BASE = window.location.origin + '/api';
 
 export function getToken() {
-  return localStorage.getItem('ironlog_token');
+  return 'mock_token';
 }
 
 export function setSession(token, role, referenceId, email) {
@@ -23,13 +23,11 @@ export function clearSession() {
 }
 
 export function getSessionUser() {
-  const token = getToken();
-  if (!token) return null;
   return {
-    token,
-    role: localStorage.getItem('ironlog_role'),
-    referenceId: localStorage.getItem('ironlog_ref_id') ? parseInt(localStorage.getItem('ironlog_ref_id')) : null,
-    email: localStorage.getItem('ironlog_email')
+    token: 'mock_token',
+    role: 'Admin',
+    referenceId: null,
+    email: 'admin@ironlog.com'
   };
 }
 
