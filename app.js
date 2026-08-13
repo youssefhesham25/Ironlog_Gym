@@ -17,28 +17,63 @@ let state = {
   memberProfile: null // For logged-in Member profile data
 };
 
-const NAV_ROLES = {
+const NAV_CATEGORIES = {
   Admin: [
-    ['dashboard', 'Dashboard (Admin)'],
-    ['members', 'Members (Admin)'],
-    ['trainers', 'Trainers (Admin)'],
-    ['plans', 'Plans (Admin)'],
-    ['attendance', 'Attendance Station'],
-    ['reports', 'Reports & Scheduler'],
-    ['notifications', 'Expiry Alerts'],
-    ['trainer_clients', 'My Clients (Trainer)'],
-    ['member_dashboard', 'Welcome (Member)'],
-    ['member_subscription', 'Subscription (Member)']
+    {
+      title: "Core Operations",
+      items: [
+        ['dashboard', '📊 Executive Dashboard'],
+        ['attendance', '⏱️ Attendance Station'],
+        ['notifications', '🔔 Expiry Notification Hub']
+      ]
+    },
+    {
+      title: "Directories",
+      items: [
+        ['members', '👥 Members Directory'],
+        ['trainers', '💪 Trainers Directory'],
+        ['plans', '💳 Subscription Plans']
+      ]
+    },
+    {
+      title: "Analytics",
+      items: [
+        ['reports', '📈 SQL Analytics & Audits']
+      ]
+    },
+    {
+      title: "Trainer Portal",
+      items: [
+        ['trainer_clients', '📋 My Assigned Clients']
+      ]
+    },
+    {
+      title: "Member Portal",
+      items: [
+        ['member_dashboard', '👋 Welcome Member'],
+        ['member_subscription', '🎗️ My Subscription']
+      ]
+    }
   ],
   Trainer: [
-    ['trainer_clients', 'My Clients'],
-    ['attendance', 'Attendance Station']
+    {
+      title: "Trainer Operations",
+      items: [
+        ['trainer_clients', '📋 My Clients'],
+        ['attendance', '⏱️ Attendance Station']
+      ]
+    }
   ],
   Member: [
-    ['member_dashboard', 'Welcome'],
-    ['attendance', 'Live Gym Floor'],
-    ['member_subscription', 'My Subscription'],
-    ['notifications', 'Alerts Log']
+    {
+      title: "Member Space",
+      items: [
+        ['member_dashboard', '👋 Welcome'],
+        ['attendance', '⏱️ Live Gym Floor'],
+        ['member_subscription', '🎗️ My Subscription'],
+        ['notifications', '🔔 Alerts Log']
+      ]
+    }
   ]
 };
 
@@ -104,17 +139,18 @@ export async function render() {
   }
 
   await loadData();
-  const navItems = NAV_ROLES[user.role];
+  const categories = NAV_CATEGORIES[user.role];
+  const allowedViews = categories.flatMap(cat => cat.items.map(item => item[0]));
   
-  // Make sure current view matches allowed role views
-  if (!navItems.some(([viewKey]) => viewKey === state.view)) {
-    state.view = navItems[0][0];
+  // Make sure current view matches allowed views
+  if (!allowedViews.includes(state.view)) {
+    state.view = allowedViews[0];
   }
 
   app.innerHTML = `
     <div id="app-shell" style="display:flex;width:100%;min-height:100vh;">
       <button id="mobile-menu-btn" class="btn" style="position:fixed;top:15px;right:15px;z-index:30;display:none;width:40px;height:40px;padding:0;justify-content:center;align-items:center;background:var(--iron-3);border:1px solid var(--line-strong);color:var(--chalk);">☰</button>
-      ${views.viewSidebar(user, state.view, navItems)}
+      ${views.viewSidebar(user, state.view, categories)}
       <main id="main" style="flex:1;min-width:0;"></main>
     </div>
   `;

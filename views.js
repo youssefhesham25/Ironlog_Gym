@@ -35,7 +35,7 @@ export function viewLogin() {
   `;
 }
 
-export function viewSidebar(user, currentView, navItems) {
+export function viewSidebar(user, currentView, categories) {
   const email = user.email || 'user@ironlog.com';
   const roleMark = user.role === 'Admin' ? 'A' : (user.role === 'Trainer' ? 'T' : 'M');
   const roleLabel = user.role === 'Admin' ? 'Admin Staff' : (user.role === 'Trainer' ? 'Captain Trainer' : 'Gym Member');
@@ -47,10 +47,14 @@ export function viewSidebar(user, currentView, navItems) {
         <div class="sub">SQL Gym Management</div>
       </div>
       <nav class="main-nav">
-        ${navItems.map(([key, label]) => `
-          <div class="navitem ${currentView === key ? 'active' : ''}" data-view="${key}">
-            <span class="dot"></span>${label}
-          </div>`).join('')}
+        ${categories.map(cat => `
+          <div class="nav-section-title">${cat.title}</div>
+          ${cat.items.map(([key, label]) => `
+            <div class="navitem ${currentView === key ? 'active' : ''}" data-view="${key}">
+              ${label}
+            </div>
+          `).join('')}
+        `).join('')}
       </nav>
       <div class="sidebar-foot" style="border-top:1px solid var(--line-strong);padding-top:16px;">
         <div class="userline" style="margin-bottom:12px;">
