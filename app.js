@@ -113,6 +113,7 @@ export async function render() {
 
   app.innerHTML = `
     <div id="app-shell" style="display:flex;width:100%;min-height:100vh;">
+      <button id="mobile-menu-btn" class="btn" style="position:fixed;top:15px;right:15px;z-index:30;display:none;width:40px;height:40px;padding:0;justify-content:center;align-items:center;background:var(--iron-3);border:1px solid var(--line-strong);color:var(--chalk);">☰</button>
       ${views.viewSidebar(user, state.view, navItems)}
       <main id="main" style="flex:1;min-width:0;"></main>
     </div>
@@ -195,6 +196,14 @@ function setupLoginListeners() {
 }
 
 function setupShellListeners() {
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const sidebar = document.querySelector('.sidebar');
+  if (menuBtn && sidebar) {
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+    });
+  }
+
   // Navigation items
   const navItems = document.querySelectorAll('.main-nav .navitem');
   navItems.forEach(item => {
@@ -207,6 +216,10 @@ function setupShellListeners() {
       // Update active nav styling
       navItems.forEach(i => i.classList.remove('active'));
       item.classList.add('active');
+
+      if (sidebar) {
+        sidebar.classList.remove('open');
+      }
     });
   });
 
