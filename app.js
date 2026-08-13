@@ -1,4 +1,4 @@
-import { apiFetch, getSessionUser, clearSession, setSession } from './api.js';
+import { apiFetch, getSessionUser, clearSession, setSession, validatePhone, validateNationalId, validateEmail, validateAge } from './api.js';
 import * as views from './views.js';
 
 // Application State
@@ -38,7 +38,7 @@ const NAV_CATEGORIES = {
     {
       title: "Analytics",
       items: [
-        ['reports', '📈 SQL Analytics & Audits']
+        ['reports', '📈 Analytics & Reports']
       ]
     },
     {
@@ -211,21 +211,102 @@ function renderMain() {
 
 // Listener Initializers
 function setupLoginListeners() {
-  const form = document.getElementById('login-form');
-  if (form) {
-    form.addEventListener('submit', async e => {
+  // Tab switching
+  const tabs = document.querySelectorAll('.auth-tab');
+  const forms = document.querySelectorAll('.auth-form');
+  
+  function switchTab(tabName) {
+    tabs.forEach(t => {
+      t.classList.toggle('active', t.getAttribute('data-tab') === tabName);
+    });
+    forms.forEach(f => {
+      f.classList.toggle('active', f.getAttribute('data-form') === tabName);
+    });
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.getAttribute('data-tab')));
+  });
+
+  const switchToRegister = document.getElementById('switch-to-register');
+  if (switchToRegister) {
+    switchToRegister.addEventListener('click', e => { e.preventDefault(); switchTab('register'); });
+  }
+  const switchToLogin = document.getElementById('switch-to-login');
+  if (switchToLogin) {
+    switchToLogin.addEventListener('click', e => { e.preventDefault(); switchTab('login'); });
+  }
+
+  // Login form
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', async e => {
       e.preventDefault();
-      const email = form.email.value.trim();
-      const password = form.password.value;
-      
-      const res = await apiFetch('/auth/login', 'POST', { email, password });
+      // Clear errors
+      document.getElementById('login-phone-error').textContent = '';
+      document.getElementById('login-nid-error').textContent = '';
+      document.getElementById('login-error').textContent = '';
+
+      const phone = loginForm.phone.value.trim();
+      const national_id = loginForm.national_id.value.trim();
+
+      // Client-side validation
+      const phoneErr = validatePhone(phone);
+      if (phoneErr) { document.getElementById('login-phone-error').textContent = phoneErr; return; }
+      const nidErr = validateNationalId(national_id);
+      if (nidErr) { document.getElementById('login-nid-error').textContent = nidErr; return; }
+
+      const res = await apiFetch('/auth/login', 'POST', { phone, national_id });
       if (res && res.status === 'Success') {
-        setSession(res.token, res.role, res.reference_id, email);
-        state.view = 'dashboard';
+        setSession(res.token, res.role, res.reference_id, res.email, res.full_name);
+        state.view = res.role === 'Member' ? 'member_dashboard' : (res.role === 'Trainer' ? 'trainer_clients' : 'dashboard');
         toast('🔓 Signed in successfully!');
         render();
       } else {
-        toast(`Error: ${res ? res.error : 'Invalid credentials'}`);
+        document.getElementById('login-error').textContent = res ? res.error : 'Login failed';
+      }
+    });
+  }
+
+  // Register form
+  const registerForm = document.getElementById('register-form');
+  if (registerForm) {
+    registerForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      // Clear all errors
+      ['reg-name-error', 'reg-phone-error', 'reg-nid-error', 'reg-email-error', 'reg-dob-error', 'register-error'].forEach(id => {
+        document.getElementById(id).textContent = '';
+      });
+
+      const full_name = registerForm.full_name.value.trim();
+      const phone = registerForm.phone.value.trim();
+      const national_id = registerForm.national_id.value.trim();
+      const email = registerForm.email.value.trim();
+      const date_of_birth = registerForm.date_of_birth.value;
+      const gender = registerForm.gender.value;
+      const role = registerForm.role.value;
+
+      // Client-side validation
+      let hasError = false;
+      if (!full_name) { document.getElementById('reg-name-error').textContent = 'Full name is required'; hasError = true; }
+      const phoneErr = validatePhone(phone);
+      if (phoneErr) { document.getElementById('reg-phone-error').textContent = phoneErr; hasError = true; }
+      const nidErr = validateNationalId(national_id);
+      if (nidErr) { document.getElementById('reg-nid-error').textContent = nidErr; hasError = true; }
+      const emailErr = validateEmail(email);
+      if (emailErr) { document.getElementById('reg-email-error').textContent = emailErr; hasError = true; }
+      const ageErr = validateAge(date_of_birth);
+      if (ageErr) { document.getElementById('reg-dob-error').textContent = ageErr; hasError = true; }
+      if (hasError) return;
+
+      const res = await apiFetch('/auth/register', 'POST', { full_name, phone, national_id, email, date_of_birth, gender, role });
+      if (res && res.status === 'Success') {
+        setSession(res.token, res.role, res.reference_id, res.email, res.full_name);
+        state.view = res.role === 'Member' ? 'member_dashboard' : (res.role === 'Trainer' ? 'trainer_clients' : 'dashboard');
+        toast('✨ Account created successfully!');
+        render();
+      } else {
+        document.getElementById('register-error').textContent = res ? res.error : 'Registration failed';
       }
     });
   }
@@ -465,7 +546,7 @@ function toast(message) {
 
 // Individual Form Modal Builders
 function openAddMemberModal() {
-  showModal('Register New Member (sp_RegisterMember)', `
+  showModal('Register New Member', `
     <form>
       <div class="form-grid">
         <div class="form-group"><label>Full Name *</label><input name="full_name" required placeholder="e.g. Youssef Ahmed"></div>
@@ -577,7 +658,7 @@ function openAddPlanModal() {
 }
 
 function openRenewSubscriptionModal(memberId, activePlanId) {
-  showModal('Renew Subscription (sp_RenewSubscription)', `
+  showModal('Renew Subscription', `
     <form>
       <div style="font-size:13.5px;color:var(--chalk-dim);margin-bottom:16px;">
         Select renewal plan and trainer variables for Member ID <strong>#${memberId}</strong>.
@@ -598,7 +679,7 @@ function openRenewSubscriptionModal(memberId, activePlanId) {
       </div>
       <div class="modal-actions">
         <button type="button" class="btn ghost modal-cancel-btn">Cancel</button>
-        <button type="submit" class="btn">Execute sp_RenewSubscription</button>
+        <button type="submit" class="btn">Renew Subscription</button>
       </div>
     </form>
   `, async fd => {

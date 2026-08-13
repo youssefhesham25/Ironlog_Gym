@@ -19,24 +19,85 @@ export function viewLogin() {
       <div class="login-box">
         <h2>IRON<span>LOG</span></h2>
         <div class="subtitle">Gym Management Portal</div>
-        <form id="login-form">
+
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Sign In</button>
+          <button class="auth-tab" data-tab="register">Register</button>
+        </div>
+
+        <form id="login-form" class="auth-form active" data-form="login">
           <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" name="email" required placeholder="e.g. admin@ironlog.com" value="admin@ironlog.com">
+            <label>Phone Number</label>
+            <input type="tel" name="phone" required placeholder="e.g. 01000000000" maxlength="11">
+            <div class="field-error" id="login-phone-error"></div>
           </div>
           <div class="form-group">
-            <label>Password</label>
-            <input type="password" name="password" required placeholder="••••••••" value="admin123">
+            <label>National ID</label>
+            <input type="text" name="national_id" required placeholder="e.g. 30001011234567" maxlength="14">
+            <div class="field-error" id="login-nid-error"></div>
           </div>
-          <button type="submit" class="btn" style="margin-top:10px;justify-content:center;">Sign In</button>
+          <div class="field-error" id="login-error" style="text-align:center;margin-bottom:6px;"></div>
+          <button type="submit" class="btn" style="margin-top:6px;justify-content:center;">Sign In</button>
+          <div class="auth-switch">Don't have an account? <a href="#" id="switch-to-register">Register here</a></div>
+        </form>
+
+        <form id="register-form" class="auth-form" data-form="register">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" name="full_name" required placeholder="e.g. Ahmed Mohamed">
+            <div class="field-error" id="reg-name-error"></div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>Phone Number *</label>
+              <input type="tel" name="phone" required placeholder="11 digits" maxlength="11">
+              <div class="field-error" id="reg-phone-error"></div>
+            </div>
+            <div class="form-group">
+              <label>National ID *</label>
+              <input type="text" name="national_id" required placeholder="14 digits" maxlength="14">
+              <div class="field-error" id="reg-nid-error"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" name="email" required placeholder="user@gmail.com or user@yahoo.com">
+            <div class="field-error" id="reg-email-error"></div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>Date of Birth *</label>
+              <input type="date" name="date_of_birth" required>
+              <div class="field-error" id="reg-dob-error"></div>
+            </div>
+            <div class="form-group">
+              <label>Gender *</label>
+              <select name="gender" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Account Type *</label>
+            <select name="role" required>
+              <option value="Member">Member</option>
+              <option value="Trainer">Trainer</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+          <div class="field-error" id="register-error" style="text-align:center;margin-bottom:6px;"></div>
+          <button type="submit" class="btn" style="margin-top:6px;justify-content:center;">Create Account</button>
+          <div class="auth-switch">Already have an account? <a href="#" id="switch-to-login">Sign in here</a></div>
         </form>
       </div>
     </div>
   `;
 }
 
+
 export function viewSidebar(user, currentView, categories) {
-  const email = user.email || 'user@ironlog.com';
+  const displayName = user.fullName || user.email || 'User';
   const roleMark = user.role === 'Admin' ? 'A' : (user.role === 'Trainer' ? 'T' : 'M');
   const roleLabel = user.role === 'Admin' ? 'Admin Staff' : (user.role === 'Trainer' ? 'Captain Trainer' : 'Gym Member');
 
@@ -60,7 +121,7 @@ export function viewSidebar(user, currentView, categories) {
         <div class="userline" style="margin-bottom:12px;">
           <div class="avatar">${roleMark}</div>
           <div style="min-width:0;">
-            <div style="font-weight:600;color:var(--chalk);text-overflow:ellipsis;overflow:hidden;white-space:nowrap;">${email}</div>
+            <div style="font-weight:600;color:var(--chalk);text-overflow:ellipsis;overflow:hidden;white-space:nowrap;">${displayName}</div>
             <div style="font-size:10px;color:var(--chalk-faint);">${roleLabel}</div>
           </div>
         </div>
@@ -74,7 +135,7 @@ export function viewAdminDashboard(stats, liveOccupancy, peakHours, onCheckOut) 
   const currentStats = stats || { total_members: 0, active_members: 0, inside_gym: 0, today_check_ins: 0, total_trainers: 0, expiring_soon: 0, expired_members: 0 };
   return `
     <div class="pagehead">
-      <div><div class="eyebrow">SQL Connected Overview</div><h1>Dashboard</h1></div>
+      <div><div class="eyebrow">Overview</div><h1>Dashboard</h1></div>
       <div class="meta">${new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
     </div>
     
@@ -259,7 +320,7 @@ export function viewAdminAttendance(liveOccupancy, members, onCheckIn, onCheckOu
 export function viewAdminReports(daily, monthly) {
   return `
     <div class="pagehead">
-      <div><div class="eyebrow">SQL Analytics</div><h1>Attendance Reports</h1></div>
+      <div><div class="eyebrow">Analytics</div><h1>Attendance Reports</h1></div>
       <button class="btn trigger-scheduler-run-btn" style="background:var(--olive);color:var(--iron);">Run Expiry Scheduler Audits</button>
     </div>
     <div class="grid-2">
@@ -351,7 +412,7 @@ export function viewMemberDashboard(member, liveOccupancy, onCheckIn, onCheckOut
         <h2>${currentMember.full_name}</h2>
         <div class="tag-row">
           <span class="tag gold">Membership: ${currentMember.membership_status || 'Active'}</span>
-          <span class="tag">SQL Connected</span>
+          <span class="tag">Connected</span>
         </div>
       </div>
       <div class="checkin-block">
