@@ -142,8 +142,8 @@ def run_verification_tests(conn):
     res = sp_RegisterMember(
         conn,
         full_name="Mahmoud Farouk",
-        phone="01099998888",
-        email="mahmoud.f@email.com",
+        phone="01099990000",
+        email="test.mahmoud@email.com",
         date_of_birth="1996-04-12",
         gender="Male",
         address="Giza",

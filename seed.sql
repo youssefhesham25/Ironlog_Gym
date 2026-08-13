@@ -45,7 +45,9 @@ INSERT INTO Members (member_id, full_name, phone, email, date_of_birth, gender, 
 (5, 'Layla Mahmoud', '01000000005', 'layla.m@email.com', '1999-09-25', 'Female', '5th Settlement, New Cairo', '2026-08-05', 'Active'),
 (6, 'Mohamed Ali', '01000000006', 'mohamed.ali@email.com', '1994-04-18', 'Male', 'Dokki, Giza', '2026-07-01', 'Active'),
 (7, 'Nour El-Din', '01000000007', 'nour@email.com', '1997-12-30', 'Male', 'Sheikh Zayed, Giza', '2026-08-02', 'Active'),
-(8, 'Karim Zaki', '01000000008', 'karim.z@email.com', '1993-03-15', 'Male', 'Rehab City, New Cairo', '2026-07-20', 'Active');
+(8, 'Karim Zaki', '01000000008', 'karim.z@email.com', '1993-03-15', 'Male', 'Rehab City, New Cairo', '2026-07-20', 'Active'),
+(9, 'Mahmoud Farouk', '01099998888', 'mahmoud.f@email.com', '1996-04-12', 'Male', 'Giza', '2026-08-01', 'Active'),
+(10, 'Hana Selim', '01066778899', 'hana.s@email.com', '2001-07-20', 'Female', 'Heliopolis, Cairo', '2026-08-09', 'Active');
 
 -- ----------------------------------------------------------------------------
 -- 4. SEED SUBSCRIPTIONS
@@ -57,7 +59,9 @@ INSERT INTO Subscriptions (subscription_id, member_id, plan_id, trainer_id, star
 (3, 5, 1, 3, '2026-08-05', '2026-09-05', 'Active'),
 (4, 6, 4, 1, '2026-07-01', '2027-07-01', 'Active'),
 (5, 7, 2, 4, '2026-08-02', '2026-11-02', 'Active'),
-(6, 8, 3, 2, '2026-07-20', '2027-01-20', 'Active');
+(6, 8, 3, 2, '2026-07-20', '2027-01-20', 'Active'),
+(9, 9, 3, 1, '2026-08-01', '2027-02-01', 'Active'),
+(10, 10, 2, 2, '2026-08-09', '2026-11-09', 'Active');
 
 -- Expiring Soon Subscriptions (Within 7 Days)
 INSERT INTO Subscriptions (subscription_id, member_id, plan_id, trainer_id, start_date, end_date, status) VALUES
@@ -94,7 +98,8 @@ INSERT INTO Attendance (member_id, check_in_date, check_in_time, check_out_date,
 INSERT INTO Attendance (member_id, check_in_date, check_in_time, check_out_date, check_out_time, status) VALUES
 (1, DATE('now'), '17:30:00', NULL, NULL, 'Checked In'),
 (2, DATE('now'), '18:10:00', NULL, NULL, 'Checked In'),
-(5, DATE('now'), '18:45:00', NULL, NULL, 'Checked In');
+(5, DATE('now'), '18:45:00', NULL, NULL, 'Checked In'),
+(6, DATE('now'), '19:00:00', NULL, NULL, 'Checked In');
 
 -- ----------------------------------------------------------------------------
 -- 6. SEED MEMBER PROGRESS

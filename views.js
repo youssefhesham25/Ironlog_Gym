@@ -44,7 +44,7 @@ export function viewSidebar(user, currentView, categories) {
     <aside class="sidebar">
       <div class="brand">
         <div class="mark">IRON<span>LOG</span></div>
-        <div class="sub">SQL Gym Management</div>
+        <div class="sub">Gym Management</div>
       </div>
       <nav class="main-nav">
         ${categories.map(cat => `
@@ -120,14 +120,13 @@ export function viewLiveOccupancyPanel(liveOccupancy, onCheckOut) {
         <div class="gym-live-title">
           <span class="live-dot"></span>
           <div>
-            <div class="eyebrow">SQL Live Query</div>
-            <h3>Who's In The Gym Right Now (vw_CurrentOccupancy)</h3>
+            <h3>Who's In The Gym Right Now</h3>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
           <div class="crowd-badge ${level}">${label}</div>
           <div class="mono" style="color:var(--chalk);font-size:15px;">${count} members inside</div>
-          <button class="btn small ghost refresh-sql-btn">Refresh SQL</button>
+          <button class="btn small ghost refresh-sql-btn">Refresh</button>
         </div>
       </div>
 

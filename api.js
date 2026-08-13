@@ -23,11 +23,21 @@ const DEFAULT_TRAINERS = [
 const DEFAULT_MEMBERS = [
   { member_id: 1, full_name: "Youssef Ahmed", phone: "01000000001", email: "youssef@email.com", membership_status: "Active", plan_name: "Premium Plan", plan_id: 2, trainer_name: "Captain Ahmed", trainer_id: 1, start_date: "2026-08-01", end_date: "2026-11-01" },
   { member_id: 2, full_name: "Nour El-Din", phone: "01000000002", email: "nour@email.com", membership_status: "Expiring Soon", plan_name: "Basic Plan", plan_id: 1, trainer_name: "Captain Sara", trainer_id: 2, start_date: "2026-07-15", end_date: "2026-08-15" },
-  { member_id: 3, full_name: "Sara Ibrahim", phone: "01000000003", email: "sara.i@email.com", membership_status: "Expired", plan_name: "Basic Plan", plan_id: 1, trainer_name: null, trainer_id: null, start_date: "2026-06-01", end_date: "2026-07-01" }
+  { member_id: 3, full_name: "Sara Ibrahim", phone: "01000000003", email: "sara.i@email.com", membership_status: "Expired", plan_name: "Basic Plan", plan_id: 1, trainer_name: null, trainer_id: null, start_date: "2026-06-01", end_date: "2026-07-01" },
+  { member_id: 4, full_name: "Mahmoud Farouk", phone: "01099998888", email: "mahmoud.f@email.com", membership_status: "Active", plan_name: "VIP Yearly", plan_id: 3, trainer_name: "Captain Ahmed", trainer_id: 1, start_date: "2026-08-01", end_date: "2027-08-01" },
+  { member_id: 5, full_name: "Layla Mansour", phone: "01011223344", email: "layla.m@email.com", membership_status: "Active", plan_name: "Premium Plan", plan_id: 2, trainer_name: "Captain Sara", trainer_id: 2, start_date: "2026-08-05", end_date: "2026-11-05" },
+  { member_id: 6, full_name: "Omar Khattab", phone: "01022334455", email: "omar.k@email.com", membership_status: "Active", plan_name: "Basic Plan", plan_id: 1, trainer_name: null, trainer_id: null, start_date: "2026-08-10", end_date: "2026-09-10" },
+  { member_id: 7, full_name: "Karim Zaki", phone: "01033445566", email: "karim.z@email.com", membership_status: "Active", plan_name: "Premium Plan", plan_id: 2, trainer_name: "Captain Ahmed", trainer_id: 1, start_date: "2026-08-02", end_date: "2026-11-02" },
+  { member_id: 8, full_name: "Ahmed Hassan", phone: "01044556677", email: "ahmed.h@email.com", membership_status: "Inactive", plan_name: "Basic Plan", plan_id: 1, trainer_name: null, trainer_id: null, start_date: "2026-05-01", end_date: "2026-06-01" },
+  { member_id: 9, full_name: "Mohamed Ali", phone: "01055667788", email: "mohamed.ali@email.com", membership_status: "Active", plan_name: "VIP Yearly", plan_id: 3, trainer_name: null, trainer_id: null, start_date: "2026-08-01", end_date: "2027-08-01" },
+  { member_id: 10, full_name: "Hana Selim", phone: "01066778899", email: "hana.s@email.com", membership_status: "Active", plan_name: "Premium Plan", plan_id: 2, trainer_name: "Captain Sara", trainer_id: 2, start_date: "2026-08-09", end_date: "2026-11-09" }
 ];
 
 const DEFAULT_ATTENDANCE = [
-  { attendance_id: 1, member_id: 1, full_name: "Youssef Ahmed", phone: "01000000001", plan_name: "Premium Plan", check_in_time: "01:25", duration_minutes: 45 }
+  { attendance_id: 1, member_id: 1, full_name: "Youssef Ahmed", phone: "01000000001", plan_name: "Premium Plan", check_in_time: "01:25", duration_minutes: 45 },
+  { attendance_id: 2, member_id: 4, full_name: "Mahmoud Farouk", phone: "01099998888", plan_name: "VIP Yearly", check_in_time: "02:10", duration_minutes: 20 },
+  { attendance_id: 3, member_id: 5, full_name: "Layla Mansour", phone: "01011223344", plan_name: "Premium Plan", check_in_time: "02:22", duration_minutes: 15 },
+  { attendance_id: 4, member_id: 6, full_name: "Omar Khattab", phone: "01022334455", plan_name: "Basic Plan", check_in_time: "02:30", duration_minutes: 5 }
 ];
 
 const DEFAULT_ALERTS = [
